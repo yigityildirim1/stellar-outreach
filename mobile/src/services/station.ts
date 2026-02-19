@@ -5,7 +5,17 @@ import type { Station, CollectResult } from '../types/stellar';
 export async function fetchStation(playerId: string): Promise<Station> {
   const cacheKey = `station:${playerId}`;
   try {
-    const data = await api.get<Station>(`/api/stellar/station?player_id=${encodeURIComponent(playerId)}`);
+    const raw = await api.get<any>(`/api/stellar/station?player_id=${encodeURIComponent(playerId)}`);
+    // Backend returns modules as a dict {id: module}, but Station type expects StationModule[]
+    const data: Station = {
+      ...raw,
+      modules: raw.modules
+        ? Object.values(raw.modules).map((m: any) => ({
+            ...m,
+            status: m.status ?? m.cosmic_status ?? 'NOMINAL',
+          }))
+        : [],
+    };
     await cache.set(cacheKey, data, TTL.STATION);
     return data;
   } catch (err) {

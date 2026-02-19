@@ -48,6 +48,7 @@ export function TutorialScreen() {
   const { completeOnboarding: finishAuth } = useAuth();
   const [page, setPage] = useState(0);
   const [initializing, setInitializing] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
   const scrollRef = useRef<ScrollView>(null);
 
   const isLastPage = page === PAGES.length - 1;
@@ -59,9 +60,11 @@ export function TutorialScreen() {
 
   const onInitialize = async () => {
     setInitializing(true);
+    setInitError(null);
     try {
       // 1. Register player on backend
       const reg = await registerPlayer();
+      if (!reg?.player_id) throw new Error('Server returned invalid response. Try again.');
 
       // 2. Complete onboarding on backend
       await completeOnboarding(reg.player_id);
@@ -82,9 +85,14 @@ export function TutorialScreen() {
       });
 
       // Navigation will auto-switch to MainTabs via RootNavigator's isOnboarded check
-    } catch (e) {
+    } catch (e: any) {
       setInitializing(false);
-      // Stay on screen — user can retry
+      const msg = e?.message ?? '';
+      if (msg.includes('Network request failed') || msg.includes('fetch')) {
+        setInitError('Cannot reach server. Make sure your Mac backend is running and phone is on the same WiFi.');
+      } else {
+        setInitError(msg || 'Initialization failed. Tap to retry.');
+      }
     }
   };
 
@@ -120,6 +128,9 @@ export function TutorialScreen() {
       </View>
 
       <View style={styles.footer}>
+        {initError && (
+          <Text style={styles.errorText}>{initError}</Text>
+        )}
         {isLastPage ? (
           <TouchableOpacity
             style={styles.initButton}
@@ -232,5 +243,12 @@ const styles = StyleSheet.create({
   initButtonText: {
     ...typography.monoMedium,
     color: colors.darkBg,
+  },
+  errorText: {
+    ...typography.monoSmall,
+    color: colors.error,
+    textAlign: 'center',
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
 });

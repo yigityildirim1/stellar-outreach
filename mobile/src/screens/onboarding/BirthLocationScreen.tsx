@@ -14,11 +14,13 @@ async function requestGPS(): Promise<{ latitude: number; longitude: number } | n
     );
     if (granted !== PermissionsAndroid.RESULTS.GRANTED) return null;
   }
+  // iOS: location permission is declared in Info.plist (NSLocationWhenInUseUsageDescription)
+  // and automatically prompted by the OS on first getCurrentPosition call.
   return new Promise((resolve) => {
     navigator.geolocation.getCurrentPosition(
       (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
-      () => resolve(null),
-      { enableHighAccuracy: false, timeout: 10000 },
+      (_err) => resolve(null),
+      { enableHighAccuracy: false, timeout: 15000 },
     );
   });
 }

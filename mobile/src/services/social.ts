@@ -25,7 +25,13 @@ export function sendGift(playerId: string, friendId: string) {
 export async function fetchGuild(playerId: string): Promise<GuildResponse> {
   const cacheKey = `guild:${playerId}`;
   try {
-    const data = await api.get<GuildResponse>(`/api/stellar/guild?player_id=${encodeURIComponent(playerId)}`);
+    const raw = await api.get<any>(`/api/stellar/guild?player_id=${encodeURIComponent(playerId)}`);
+    // Backend returns {"error":"...", "in_guild": false} as 200 OK when not in a guild,
+    // and {"success":true, "in_guild":true, "guild":{...}} when in a guild.
+    if (!raw.in_guild) {
+      throw new Error('Not in a guild');
+    }
+    const data: GuildResponse = raw.guild;
     await cache.set(cacheKey, data, TTL.SOCIAL);
     return data;
   } catch (err) {
