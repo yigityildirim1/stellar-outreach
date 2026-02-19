@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+*.egg-info/
+
+# Node / React Native
+mobile/node_modules/
+mobile/.bundle/
+mobile/vendor/
+mobile/ios/Pods/
+mobile/ios/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/*.jsbundle
+mobile/coverage/
+
+# Xcode
+mobile/ios/*.xcuserstate
+mobile/ios/xcuserdata/
+mobile/ios/DerivedData/
+
+# Runtime data
+~/.nexus_station/

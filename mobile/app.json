@@ -1,0 +1,15 @@
+{
+  "name": "StellarOutreach",
+  "displayName": "NEXUS STATION",
+  "version": "1.0.0",
+  "description": "A cosmic companion app — daily astrological briefings, space station management, and celestial discovery.",
+  "author": "NEXUS Station Team",
+  "ios": {
+    "bundleIdentifier": "com.nexusstation.stellaroutreach",
+    "buildNumber": "1"
+  },
+  "android": {
+    "package": "com.nexusstation.stellaroutreach",
+    "versionCode": 1
+  }
+}
