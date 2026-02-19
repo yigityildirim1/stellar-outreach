@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { SplashScreen } from '../components/shared/SplashScreen';
 import { OnboardingNavigator } from '../screens/onboarding/OnboardingNavigator';
 import { MainTabs } from './MainTabs';
+import { GameScreen } from '../screens/missions/GameScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -18,7 +19,10 @@ export function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isOnboarded ? (
-        <Stack.Screen name="MainTabs" component={MainTabs} />
+        <>
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen name="Game" component={GameScreen} />
+        </>
       ) : (
         <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
       )}

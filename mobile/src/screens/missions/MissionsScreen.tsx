@@ -8,11 +8,14 @@ import {
   RefreshControl,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors, typography, spacing } from '../../theme';
 import { useAuth } from '../../context/AuthContext';
 import { fetchDailyMission } from '../../services/miniGames';
 import { fetchStreaks, streakCheckin } from '../../services/progression';
 import type { DailyMission, StreakData } from '../../types/stellar';
+import type { RootStackParamList } from '../../navigation/types';
 import { StationHeader } from '../../components/shared/StationHeader';
 import { SectionCard } from '../../components/shared/SectionCard';
 import { DailyMissionCard } from '../../components/missions/DailyMissionCard';
@@ -21,19 +24,22 @@ import { GameLauncherCard } from '../../components/missions/GameLauncherCard';
 import { OfflineBanner } from '../../components/shared/OfflineBanner';
 import { analytics } from '../../services/analytics';
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 const GAMES = [
-  { name: 'Star Pattern', description: 'Connect constellations from memory', icon: '✦' },
-  { name: 'Circuit Repair', description: 'Fix station wiring under time pressure', icon: '⚡' },
-  { name: 'Asteroid Deflection', description: 'Calculate trajectories to save the station', icon: '☄' },
-  { name: 'Crew Diplomacy', description: 'Navigate crew conflicts with dialogue', icon: '🤝' },
-  { name: 'Signal Decode', description: 'Decrypt incoming transmissions', icon: '📡' },
-  { name: 'Cosmic Harvest', description: 'Manage resource collection cycles', icon: '🌾' },
-  { name: 'Sky Scanner', description: 'Identify celestial objects in real-time', icon: '🔭' },
+  { name: 'Star Pattern', description: 'Connect constellations from memory', icon: '✦', gameId: 'star-pattern' },
+  { name: 'Circuit Repair', description: 'Fix station wiring under time pressure', icon: '⚡', gameId: 'repair' },
+  { name: 'Asteroid Deflection', description: 'Calculate trajectories to save the station', icon: '☄', gameId: 'asteroid' },
+  { name: 'Crew Diplomacy', description: 'Navigate crew conflicts with dialogue', icon: '🤝', gameId: 'diplomacy' },
+  { name: 'Signal Decode', description: 'Decrypt incoming transmissions', icon: '📡', gameId: 'signal-decode' },
+  { name: 'Cosmic Harvest', description: 'Manage resource collection cycles', icon: '🌾', gameId: 'harvest' },
+  { name: 'Sky Scanner', description: 'Identify celestial objects in real-time', icon: '🔭', gameId: 'sky-scanner' },
 ];
 
 export function MissionsScreen() {
   const { player } = useAuth();
   const playerId = player?.player_id ?? '';
+  const navigation = useNavigation<Nav>();
   const [mission, setMission] = useState<DailyMission | null>(null);
   const [streak, setStreak] = useState<StreakData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -121,7 +127,13 @@ export function MissionsScreen() {
         )}
         <SectionCard label="MINI-GAMES" rightLabel={`${GAMES.length} AVAILABLE`}>
           {GAMES.map((g) => (
-            <GameLauncherCard key={g.name} name={g.name} description={g.description} icon={g.icon} />
+            <GameLauncherCard
+              key={g.name}
+              name={g.name}
+              description={g.description}
+              icon={g.icon}
+              onPress={() => navigation.navigate('Game', { gameId: g.gameId, gameName: g.name })}
+            />
           ))}
         </SectionCard>
       </ScrollView>

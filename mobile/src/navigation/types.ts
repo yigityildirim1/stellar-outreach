@@ -4,6 +4,7 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 export type RootStackParamList = {
   Onboarding: undefined;
   MainTabs: undefined;
+  Game: { gameId: string; gameName: string };
 };
 
 export type OnboardingStackParamList = {

@@ -7,9 +7,10 @@ interface GameLauncherCardProps {
   name: string;
   description: string;
   icon: string;
+  onPress: () => void;
 }
 
-export function GameLauncherCard({ name, description, icon }: GameLauncherCardProps) {
+export function GameLauncherCard({ name, description, icon, onPress }: GameLauncherCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.row}>
@@ -18,7 +19,7 @@ export function GameLauncherCard({ name, description, icon }: GameLauncherCardPr
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.desc}>{description}</Text>
         </View>
-        <ActionButton title="PLAY" onPress={() => {}} />
+        <ActionButton title="PLAY" onPress={onPress} />
       </View>
     </View>
   );
